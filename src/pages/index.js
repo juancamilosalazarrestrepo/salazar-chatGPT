@@ -77,6 +77,7 @@ function ChatForm() {
   const handleSubmit = (event) => {
     event.preventDefault()
     const { value } = textAreaRef.current
+    console.log('value', value)
     sendPrompt({ prompt: value })
     textAreaRef.current.value = ''
   }

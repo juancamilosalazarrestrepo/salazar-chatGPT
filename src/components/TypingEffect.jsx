@@ -6,28 +6,32 @@ const useTypingEffect = ({ text }) => {
   const [showCursor, setShowCursor] = useState(true)
 
   useEffect(() => {
-    if (!text.length) return
+    console.log('text.lengt', text)
+    if (text) {
+      if (!text.length) return
+      const randomTime = Math.floor(Math.random() * 40) + 15
+      const intervalId = setInterval(() => {
+        if (currentIndex >= text.length) {
+          clearInterval(intervalId)
+          setShowCursor(false)
+          return
+        }
 
-    const randomTime = Math.floor(Math.random() * 40) + 15
-    const intervalId = setInterval(() => {
-      if (currentIndex >= text.length) {
-        clearInterval(intervalId)
-        setShowCursor(false)
-        return
-      }
+        const nextIndex = text.indexOf(' ', currentIndex + 1)
+        if (nextIndex < 0) {
+          setDisplayText(text)
+          setCurentIndex(text.length)
+          return
+        }
 
-      const nextIndex = text.indexOf(' ', currentIndex + 1)
-      if (nextIndex < 0) {
-        setDisplayText(text)
-        setCurentIndex(text.length)
-        return
-      }
+        setDisplayText(text.slice(0, nextIndex))
+        setCurentIndex(currentIndex + 1)
+      }, randomTime)
 
-      setDisplayText(text.slice(0, nextIndex))
-      setCurentIndex(currentIndex + 1)
-    }, randomTime)
-
-    return () => clearInterval(intervalId)
+      return () => clearInterval(intervalId)
+    } else {
+      console.log('no se')
+    }
   }, [text, currentIndex])
 
   return { displayText, showCursor }
