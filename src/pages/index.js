@@ -21,7 +21,7 @@ function Layout({ children }) {
 
 function Aside() {
   return (
-    <aside className='bg-gptdarkgray fixed flex w-64 [260px] h-screen flex-col'>
+    <aside className='bg-gptdarkgray fixed flex w-64 [260px] h-screen flex-col max-sm:hidden'>
       <nav className='flex flex-col flex-1 h-full p-2 space-y-1'>
         <button className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20'>
           <PlusIcon />
@@ -46,7 +46,7 @@ function Message({ ia, message }) {
     <div className={` ${ia ? 'bg-gptlightgray' : 'bg-gptgray'}`}>
       <article className='flex gap-4 p-6 m-auto max-w-3xl'>
         <Avatar>{avatar}</Avatar>
-        <div className='min-h-[20px] flex flex-1 flex-col items-start gap-4 whitespace-pre-wrap'>
+        <div className='min-h-[20px] flex flex-1 flex-col items-start gap-4'>
           <div className='prose-invert w-full break-words'>
             <p className='text-gray-300'>{textElement}</p>
           </div>
@@ -55,16 +55,69 @@ function Message({ ia, message }) {
     </div>
   )
 }
+function MobileNavBar() {
+  return (
+    <div className='sticky top-0 z-10 flex items-center w-full border-b border-white/20 bg-gptgray  pt-1 text-gray-200 pl-1 md:hidden'>
+      <button
+        type='button'
+        className='-ml-0.5 -mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:hover:text-white'
+      >
+        <span className='sr-only'>Open sidebar</span>
+        <svg
+          stroke='currentColor'
+          fill='none'
+          strokeWidth='1.5'
+          viewBox='0 0 24 24'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+          className='h-6 w-6'
+          height='1em'
+          width='1em'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <line x1='3' y1='12' x2='21' y2='12' />
+          <line x1='3' y1='6' x2='21' y2='6' />
+          <line x1='3' y1='18' x2='21' y2='18' />
+        </svg>
+      </button>
+      <h1 className='flex-1 text-center text-base font-normal'>
+        Escribe tu pregunta.
+      </h1>
+      <button type='button' className='px-3'>
+        <svg
+          stroke='currentColor'
+          fill='none'
+          strokeWidth='1.5'
+          viewBox='0 0 24 24'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+          className='h-6 w-6'
+          height='1em'
+          width='1em'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          <line x1='12' y1='5' x2='12' y2='19' />
+          <line x1='5' y1='12' x2='19' y2='12' />
+        </svg>
+      </button>
+    </div>
+  )
+}
 
 function Chat() {
   const messages = useMessageStore((state) => state.messages)
+
   return (
-    <div className='flex flex-col h-full flex-1 pl-64'>
-      <main>
-        {messages.map((entry) => (
-          <Message key={entry.id} {...entry} />
-        ))}
+    <div className='flex flex-col h-full flex-1 pl-64 max-sm:pl-0 max-sm:pr-0'>
+      <main className='h-full'>
+        <MobileNavBar />
+        <div className='snap-y pb-32 bg-gptgray'>
+          {messages.map((entry) => (
+            <Message key={entry.id} {...entry} />
+          ))}
+        </div>
       </main>
+
       <ChatForm />
     </div>
   )
@@ -77,7 +130,6 @@ function ChatForm() {
   const handleSubmit = (event) => {
     event.preventDefault()
     const { value } = textAreaRef.current
-    console.log('value', value)
     sendPrompt({ prompt: value })
     textAreaRef.current.value = ''
   }
@@ -89,14 +141,13 @@ function ChatForm() {
   }
 
   const handleKeyDown = (e) => {
-    console.log(e)
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSubmit(e)
     }
   }
   return (
-    <section className='absolute bottom-0 left-0 right-0 w-full ml-32'>
+    <section className='fixed bottom-0 sm:left-0 sm:right-0  w-full ml-32 max-sm:ml-0 max-sm:w-11/12 max-sm:self-center'>
       <form
         onSubmit={handleSubmit}
         onKeyDown={handleKeyDown}

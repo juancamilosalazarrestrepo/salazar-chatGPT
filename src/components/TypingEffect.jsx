@@ -6,7 +6,6 @@ const useTypingEffect = ({ text }) => {
   const [showCursor, setShowCursor] = useState(true)
 
   useEffect(() => {
-    console.log('text.lengt', text)
     if (text) {
       if (!text.length) return
       const randomTime = Math.floor(Math.random() * 40) + 15
